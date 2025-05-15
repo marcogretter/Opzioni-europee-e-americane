@@ -2,7 +2,7 @@ function prezzo = american_option(T,K,N,sigma,r,St,flag)
 % La funzione calcola il prezzo di un'opzione Put/Call Americana.
 
 % Input:
-%S_0 = valore iniziale sottostante
+% St = valore iniziale sottostante
 % T= Maturity
 % N= Numero step temporali dell'albero
 
@@ -11,8 +11,6 @@ function prezzo = american_option(T,K,N,sigma,r,St,flag)
 % M_PS: fornisce il prezzo del sottostante ad ogni nodo
 % M_US: fornisce il valore del derivato nei vari nodi
 
-% La funzione fornisce istante, valore opzione, posizione (numero up e 
-% down), nel caso in quell'istante si possa sfruttare il diritto.
 
 if nargin==6 % se non metto flag in input, prezzo una call
     flag=1;
@@ -31,15 +29,14 @@ rf=exp(r*delta);
 p=(rf-d)/(u-d);
 q=1-p;
 
-% Inizializzo le matrici per rappresentare l'albero
-% Se N è dispari il numero delle foglie è pari e viceversa:
+% Inizializzo le matrici per rappresentare l'albero:
 
 M_PS=zeros(2*N+1,N+1);
-M_payoff=zeros(2*N+1,N+1);
-M_PS(N+1,1)=St; % Se ad esempio N=6, il prezzo St viene messo in M_PS(4,1) e M_PS è 7x7
+M_payoff=zeros(size(M_PS));
+M_PS(N+1,1)=St; % Se ad esempio N=6, il prezzo St viene messo in M_PS(4,1)
 
 M_cont=zeros(size(M_PS));
-% Inizializzo M_cont, che è una matrice che per ogni cella (i,j),
+% Inizializzo M_cont, che è una matrice che per ogni cella (i,j)
 % M_cont(i,j)=1 se (i,j) è un nodo, 0 altrimenti
 
 
@@ -60,8 +57,6 @@ for j=1:(c-1)
             end
         end
 end
-
-M_cont;
 
 % Calcolo i payoff:
 
@@ -138,7 +133,7 @@ for j=(c-1):-1:1
 end
 
 M_val
-% Stampo matrice dei payoff e dei valori, quest'ultima dovuta dal confronto
+% Stampo matrice dei valori dovuta dal confronto
 % ad ogni nodo tra costo della call/put europea e il payoff del nodo
 
 prezzo=M_val(N+1,1);
